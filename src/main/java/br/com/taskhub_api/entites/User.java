@@ -3,7 +3,7 @@ package br.com.taskhub_api.entites;
 import br.com.taskhub_api.enums.Role;
 import jakarta.persistence.*;
 
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_users")
@@ -26,6 +26,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Group> groups = new HashSet<>();
+
+    @ManyToMany(mappedBy = "responsible", fetch = FetchType.LAZY)
+    private List<Task> tasks = new ArrayList<>();
+
     public UUID getUserId() {return userId;}
 
     public String getName() {return name;}
@@ -39,5 +45,24 @@ public class User {
 
     public Role getRole() {return role;}
     public void setRole(Role role) {this.role = role;}
+
+    public Set<Group> getGroups() {return groups;}
+    public void setGroups(Set<Group> groups) {this.groups = groups;}
+
+    public List<Task> getTasks() {return tasks;}
+    public void setTasks(List<Task> tasks) {this.tasks = tasks;}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return userId != null && userId.equals(user.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
 }
