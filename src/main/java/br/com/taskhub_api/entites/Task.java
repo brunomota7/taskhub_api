@@ -17,7 +17,7 @@ public class Task {
     private String taskName;
 
     private String description;
-    private LocalDate term;
+    private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
     private StatusTask status;
@@ -38,8 +38,8 @@ public class Task {
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
 
-    public LocalDate getTerm() {return term;}
-    public void setTerm(LocalDate term) {this.term = term;}
+    public LocalDate getDueDate() {return dueDate;}
+    public void setDueDate(LocalDate dueDate) {this.dueDate = dueDate;}
 
     public StatusTask getStatus() {return status;}
     public void setStatus(StatusTask status) {this.status = status;}
