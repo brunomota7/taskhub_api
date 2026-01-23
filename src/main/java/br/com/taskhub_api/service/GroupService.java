@@ -103,7 +103,7 @@ public class GroupService {
 
     // Busca todos os grupos de um usuário pelo ID, apenas ADMINS
     public List<GroupResponseDTO> findAllGroupsByUserId(UUID userId) {
-        return groupRepository.findAllGroupsByUserId(userId)
+        return groupRepository.findAllByUsers_UserId(userId)
                 .stream()
                 .map(GroupMapper::toResponse)
                 .toList();
