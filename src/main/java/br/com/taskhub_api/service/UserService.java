@@ -30,6 +30,12 @@ public class UserService {
         this.securityService = securityService;
     }
 
+    private User getAuthenticatedUser() {
+        return userRepository.findById(
+                securityService.getAuthenticatedUserId()
+        ).orElseThrow(UserNotFoundException::new);
+    }
+
     // Busca por todos os usuários da aplicação, apenas ADMINS
     public List<UserResponseDTO> findAllUsers() {
         return userRepository.findAll()
@@ -47,19 +53,14 @@ public class UserService {
 
     // Pega as informações do usuário autenticado
     public UserResponseDTO getMyInfos() {
-        UUID userId = securityService.getAuthenticatedUserId();
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
-
+        User user = getAuthenticatedUser();
         return UserMapper.toResponse(user);
     }
 
     // Atualiza informações do usuário, apenas para USER
     @Transactional
     public void updateMyInfos(UserUpdateRequestDTO dto) {
-        UUID userId = securityService.getAuthenticatedUserId();
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+        User user = getAuthenticatedUser();
 
         if (user.getRole() != Role.USER)
             throw new InvalidCredentialsException();
