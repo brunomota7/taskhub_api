@@ -33,7 +33,7 @@ public class JwtService {
                 .issuer("taskhub-api")
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
-                .subject(user.getEmail())
+                .subject(user.getUserId().toString())
                 .claim("role", "ROLE_" + user.getRole().name())
                 .build();
 
