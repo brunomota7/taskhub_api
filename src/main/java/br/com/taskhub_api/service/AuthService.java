@@ -33,7 +33,7 @@ public class AuthService {
     public RegisterResponseDTO toRegister(RegisterRequestDTO dto) {
 
         if (userRepository.existsByEmail(dto.email()))
-            throw new UserAlreadyExistsException(dto.email());
+            throw new UserAlreadyExistsException();
 
         User user = new User();
         user.setName(dto.name());

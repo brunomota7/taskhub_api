@@ -1,13 +1,14 @@
 package br.com.taskhub_api.dto.response;
 
+import java.util.Set;
 import java.util.UUID;
 
 public record MembersGroupResponseDTO(
         Long groupId,
-        Members members
+        Set<MemberDTO> members
 ) {
 
-    public record Members(
+    public record MemberDTO(
             UUID id,
             String name
     ) {}

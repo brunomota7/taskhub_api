@@ -1,5 +1,6 @@
 package br.com.taskhub_api.entites;
 
+import br.com.taskhub_api.exception.InvalidCredentialsException;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -21,6 +22,10 @@ public class Group {
 
     private String description;
 
+    @ManyToOne(fetch =  FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
     @ManyToMany
     @JoinTable(
             name = "tb_group_users",
@@ -40,6 +45,9 @@ public class Group {
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
 
+    public User getOwner() {return owner;}
+    public void setOwner(User owner) {this.owner = owner;}
+
     public Set<User> getUsers() {return users;}
     public void setUsers(Set<User> users) {this.users  = users;}
 
@@ -57,6 +65,15 @@ public class Group {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    /*
+    *  Métodos da classe
+    */
+    public void assertOwner(User user) {
+        if (!this.owner.equals(user)) {
+            throw new InvalidCredentialsException();
+        }
     }
 
 }

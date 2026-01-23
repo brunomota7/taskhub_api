@@ -4,6 +4,7 @@ import br.com.taskhub_api.dto.request.UserUpdateRequestDTO;
 import br.com.taskhub_api.dto.response.UserResponseDTO;
 import br.com.taskhub_api.entites.User;
 import br.com.taskhub_api.enums.Role;
+import br.com.taskhub_api.exception.AdminUserDeletionException;
 import br.com.taskhub_api.exception.CredentialAlreadyExists;
 import br.com.taskhub_api.exception.InvalidCredentialsException;
 import br.com.taskhub_api.exception.UserNotFoundException;
@@ -29,7 +30,7 @@ public class UserService {
         this.securityService = securityService;
     }
 
-    // Busca por todos os usuários da aplicação, apenas para ADMINS
+    // Busca por todos os usuários da aplicação, apenas ADMINS
     public List<UserResponseDTO> findAllUsers() {
         return userRepository.findAll()
                 .stream()
@@ -40,11 +41,7 @@ public class UserService {
     // Busca usuários por ID
     public UserResponseDTO findUserById(UUID id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException());
-
-        if (user.getRole() != Role.ADMIN)
-            throw new InvalidCredentialsException();
-
+                .orElseThrow(UserNotFoundException::new);
         return UserMapper.toResponse(user);
     }
 
@@ -52,7 +49,7 @@ public class UserService {
     public UserResponseDTO getMyInfos() {
         UUID userId = securityService.getAuthenticatedUserId();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         return UserMapper.toResponse(user);
     }
@@ -62,7 +59,7 @@ public class UserService {
     public void updateMyInfos(UserUpdateRequestDTO dto) {
         UUID userId = securityService.getAuthenticatedUserId();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         if (user.getRole() != Role.USER)
             throw new InvalidCredentialsException();
@@ -90,6 +87,10 @@ public class UserService {
     public void deleteUserById(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+
+        if (user.getRole() == Role.ADMIN)
+            throw new AdminUserDeletionException();
+
         userRepository.delete(user);
     }
 
