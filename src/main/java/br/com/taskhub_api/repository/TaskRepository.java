@@ -6,6 +6,7 @@ import br.com.taskhub_api.enums.StatusTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,6 +15,6 @@ import java.util.UUID;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<Task> findByTaskName(String taskName);
     List<Task> findByStatus(StatusTask statusTask);
-    List<Task> findByResponsible(User user);
-    List<Task> findByResponsibleUserId(UUID userId);
+    List<Task> findByDueDate(LocalDate dueDate);
+    List<Task> findByResponsible_UserId(UUID userId);
 }

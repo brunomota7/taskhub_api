@@ -56,7 +56,7 @@ public class GroupService {
         groupRepository.save(group);
     }
 
-    // Adiciona um novo membro ao grupo, apenas AMDINS e proprietário do grupo
+    // Adiciona um novo membro ao grupo, apenas proprietário do grupo
     @Transactional
     public void addNewMember(Long groupId, UUID userId) {
         User currentUser = getAuthenticatedUser();
@@ -85,7 +85,7 @@ public class GroupService {
                 .toList();
     }
 
-    // Busca grupo por ID, apenas ADMINS
+    // Busca grupo por ID
     public GroupResponseDTO findGroupById(Long id) {
         Group group = groupRepository.findById(id)
                 .orElseThrow(GroupNotFoundException::new);
@@ -101,7 +101,7 @@ public class GroupService {
         return GroupMapper.toResponse(group);
     }
 
-    // Busca todos os grupos de um usuário pelo ID, apenas ADMINS
+    // Busca todos os grupos de um usuário pelo ID (user ID), apenas ADMINS
     public List<GroupResponseDTO> findAllGroupsByUserId(UUID userId) {
         return groupRepository.findAllByUsers_UserId(userId)
                 .stream()
@@ -126,7 +126,7 @@ public class GroupService {
         return GroupMapper.toMembersGroupResponse(group);
     }
 
-    // Remove um usuário de um grupo, apenas AMDINS e proprietário do grupo
+    // Remove um usuário de um grupo, apenas proprietário do grupo
     @Transactional
     public void removeMemberGroupById(Long groupId, UUID userId) {
         User currentUser = getAuthenticatedUser();
@@ -146,7 +146,7 @@ public class GroupService {
         user.getGroups().remove(group);
     }
 
-    // Deleta um grupo, apenas AMDINS e proprietário do grupo
+    // Deleta um grupo, apenas proprietário do grupo
     @Transactional
     public void deleteGroup(Long groupId) {
         User currentUser = getAuthenticatedUser();

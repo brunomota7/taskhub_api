@@ -9,9 +9,7 @@ import java.time.LocalDate;
 public record TaskRequestDTO(
         String task,
         String description,
-        StatusTask status,
         LocalDate dueDate,
-        Group group,
-        User assignedUserId
+        Group group
 ) {
 }
