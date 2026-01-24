@@ -5,7 +5,6 @@ import br.com.taskhub_api.dto.response.GroupResponseDTO;
 import br.com.taskhub_api.dto.response.MembersGroupResponseDTO;
 import br.com.taskhub_api.service.GroupService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/group")
+@RequestMapping("/groups")
 public class GroupController {
 
     private final GroupService groupService;
@@ -25,84 +24,77 @@ public class GroupController {
         this.groupService = groupService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Void> createGroup(
+    @PostMapping
+    public ResponseEntity<Void> create(
             @RequestBody @Valid GroupRequestDTO dto
     ) {
         groupService.createGroup(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/{groupId}/add/{userid}")
-    public ResponseEntity<Void> addUserToGroup(
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<GroupResponseDTO>> findAll() {
+        return ResponseEntity.ok(groupService.findAllGroups());
+    }
+
+    @GetMapping("/{groupId}")
+    public ResponseEntity<GroupResponseDTO> findById(
+            @PathVariable Long groupId
+    ) {
+        return ResponseEntity.ok(groupService.findGroupById(groupId));
+    }
+
+    @GetMapping(params = "name")
+    public ResponseEntity<GroupResponseDTO> findByName(
+            @RequestParam String name
+    ) {
+        return ResponseEntity.ok(groupService.findGroupByName(name));
+    }
+
+    @GetMapping("/users/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<GroupResponseDTO>> findAllByUser(
+            @PathVariable UUID userId
+    ) {
+        return ResponseEntity.ok(groupService.findAllGroupsByUserId(userId));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<GroupResponseDTO>> findMyGroups() {
+        return ResponseEntity.ok(groupService.findAllMyGroups());
+    }
+
+    @GetMapping("/{groupId}/members")
+    public ResponseEntity<MembersGroupResponseDTO> findMembers(
+            @PathVariable Long groupId
+    ) {
+        return ResponseEntity.ok(groupService.findMembersGroupById(groupId));
+    }
+
+    @PostMapping("/{groupId}/members/{userId}")
+    public ResponseEntity<Void> addMember(
             @PathVariable Long groupId,
             @PathVariable UUID userId
     ) {
         groupService.addNewMember(groupId, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<GroupResponseDTO>> findAllGroups() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(groupService.findAllGroups());
-    }
-
-    @GetMapping("/{groupId}")
-    public ResponseEntity<GroupResponseDTO> findGroupById(
-            @PathVariable Long groupId
-    ) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(groupService.findGroupById(groupId));
-    }
-
-    @GetMapping("/{name}")
-    public ResponseEntity<GroupResponseDTO> findGroupByName(
-            @PathVariable String name
-    ) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(groupService.findGroupByName(name));
-    }
-
-    @GetMapping("/{userId}/all")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<GroupResponseDTO>> findAllGroupsByUserId(
-            @PathVariable UUID userId
-    ) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(groupService.findAllGroupsByUserId(userId));
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<List<GroupResponseDTO>> findAllMyGroups() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(groupService.findAllMyGroups());
-    }
-
-    @GetMapping("/{groupId}/members")
-    public ResponseEntity<List<MembersGroupResponseDTO>> findAllMembersByGroupId(
-            @PathVariable Long groupId
-    ) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(Collections.singletonList(groupService.findMembersGroupById(groupId)));
-    }
-
-    @PutMapping("/{groupId}/remove/{userId}")
-    public ResponseEntity<Void> removeMemberFromGroup(
+    @DeleteMapping("/{groupId}/members/{userId}")
+    public ResponseEntity<Void> removeMember(
             @PathVariable Long groupId,
             @PathVariable UUID userId
     ) {
         groupService.removeMemberGroupById(groupId, userId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{groupId}/delete")
-    public ResponseEntity<Void> deleteGroup(
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<Void> delete(
             @PathVariable Long groupId
     ) {
         groupService.deleteGroup(groupId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.noContent().build();
     }
-
 }

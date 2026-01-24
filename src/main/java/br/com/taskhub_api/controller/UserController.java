@@ -22,51 +22,47 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/all")
+    @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.findAllUsers());
+    public ResponseEntity<List<UserResponseDTO>> findAll() {
+        return ResponseEntity.ok(userService.findAllUsers());
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponseDTO> findUserById(
+    public ResponseEntity<UserResponseDTO> findById(
             @PathVariable UUID userId
     ) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.findUserById(userId));
+        return ResponseEntity.ok(userService.findUserById(userId));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponseDTO> getMyInfos() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.getMyInfos());
+    public ResponseEntity<UserResponseDTO> me() {
+        return ResponseEntity.ok(userService.getMyInfos());
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Void> updateMyInfos(
+    @PutMapping("/me")
+    public ResponseEntity<Void> updateMe(
             @RequestBody @Valid UserUpdateRequestDTO dto
     ) {
         userService.updateMyInfos(dto);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{userId}/promote")
+    @PatchMapping("/{userId}/role")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> promoteUserToAdmin(
+    public ResponseEntity<Void> promoteToAdmin(
             @PathVariable UUID userId
     ) {
         userService.promoteToAdmin(userId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{userId}/delete")
+    @DeleteMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteUsesrById(
+    public ResponseEntity<Void> delete(
             @PathVariable UUID userId
     ) {
         userService.deleteUserById(userId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.noContent().build();
     }
-
 }
