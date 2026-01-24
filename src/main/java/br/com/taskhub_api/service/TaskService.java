@@ -7,11 +7,9 @@ import br.com.taskhub_api.dto.response.TaskStatusResponseDTO;
 import br.com.taskhub_api.entites.Task;
 import br.com.taskhub_api.entites.User;
 import br.com.taskhub_api.enums.StatusTask;
-import br.com.taskhub_api.exception.InvalidStatusTaskException;
 import br.com.taskhub_api.exception.TaskNotFoundException;
 import br.com.taskhub_api.exception.UserNotFoundException;
 import br.com.taskhub_api.mapper.TaskMapper;
-import br.com.taskhub_api.repository.GroupRepository;
 import br.com.taskhub_api.repository.TaskRepository;
 import br.com.taskhub_api.repository.UserRepository;
 import br.com.taskhub_api.utility.SecurityService;
@@ -27,16 +25,13 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
-    private final GroupRepository groupRepository;
     private final SecurityService securityService;
 
     public TaskService(TaskRepository taskRepository,
                        UserRepository userRepository,
-                       GroupRepository groupRepository,
                        SecurityService securityService) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
-        this.groupRepository = groupRepository;
         this.securityService = securityService;
     }
 
