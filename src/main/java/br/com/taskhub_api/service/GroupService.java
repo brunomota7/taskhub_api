@@ -48,6 +48,7 @@ public class GroupService {
         Group group = new Group();
         group.setGroupName(dto.groupName());
         group.setDescription(dto.description());
+        group.setTypeGroup(dto.typeGroup());
         group.setOwner(user);
 
         group.getUsers().add(user);

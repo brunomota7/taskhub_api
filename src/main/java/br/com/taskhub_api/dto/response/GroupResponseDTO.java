@@ -4,6 +4,8 @@ public record GroupResponseDTO(
         Long id,
         String groupName,
         String description,
+        String typeGroup,
+        Integer qunatTask,
         OwnerDTO owner
 ) {
 

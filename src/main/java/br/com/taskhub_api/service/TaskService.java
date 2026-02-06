@@ -4,12 +4,15 @@ import br.com.taskhub_api.dto.request.TaskRequestDTO;
 import br.com.taskhub_api.dto.request.TaskUpdateDTO;
 import br.com.taskhub_api.dto.response.TaskResponseDTO;
 import br.com.taskhub_api.dto.response.TaskStatusResponseDTO;
+import br.com.taskhub_api.entites.Group;
 import br.com.taskhub_api.entites.Task;
 import br.com.taskhub_api.entites.User;
 import br.com.taskhub_api.enums.StatusTask;
+import br.com.taskhub_api.exception.GroupNotFoundException;
 import br.com.taskhub_api.exception.TaskNotFoundException;
 import br.com.taskhub_api.exception.UserNotFoundException;
 import br.com.taskhub_api.mapper.TaskMapper;
+import br.com.taskhub_api.repository.GroupRepository;
 import br.com.taskhub_api.repository.TaskRepository;
 import br.com.taskhub_api.repository.UserRepository;
 import br.com.taskhub_api.utility.SecurityService;
@@ -24,13 +27,16 @@ import java.util.UUID;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final SecurityService securityService;
 
     public TaskService(TaskRepository taskRepository,
+                       GroupRepository groupRepository,
                        UserRepository userRepository,
                        SecurityService securityService) {
         this.taskRepository = taskRepository;
+        this.groupRepository = groupRepository;
         this.userRepository = userRepository;
         this.securityService = securityService;
     }
@@ -45,13 +51,15 @@ public class TaskService {
     @Transactional
     public void createNewTask(TaskRequestDTO dto) {
         User user = getAuthenticatedUser();
+        Group group = groupRepository.findById(dto.groupId())
+                .orElseThrow(GroupNotFoundException::new);
 
         Task task = new Task();
         task.setTaskName(dto.task());
         task.setDescription(dto.description());
         task.setStatus(StatusTask.PENDING);
         task.setDueDate(dto.dueDate());
-        task.setGroup(dto.group());
+        task.setGroup(group);
         task.setResponsible(user);
 
         user.getTasks().add(task);

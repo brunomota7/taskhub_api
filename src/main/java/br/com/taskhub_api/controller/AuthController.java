@@ -9,7 +9,6 @@ import br.com.taskhub_api.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,11 +25,11 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<RegisterResponseDTO> toRegister(
+    public ResponseEntity<Void> toRegister(
             @RequestBody @Valid RegisterRequestDTO dto
     ) {
-        RegisterResponseDTO response = authService.toRegister(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        authService.toRegister(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")

@@ -24,6 +24,8 @@ public class GroupMapper {
                 group.getGroupId(),
                 group.getGroupName(),
                 group.getDescription(),
+                group.getTypeGroup(),
+                group.getTasks().size(),
                 ownerDTO
         );
     }

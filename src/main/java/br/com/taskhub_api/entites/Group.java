@@ -21,6 +21,8 @@ public class Group {
     private String groupName;
 
     private String description;
+    private String typeGroup;
+    private Integer quantTasks = 0;
 
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
@@ -44,6 +46,9 @@ public class Group {
 
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
+
+    public String getTypeGroup() {return typeGroup;}
+    public void setTypeGroup(String typeGroup) {this.typeGroup = typeGroup;}
 
     public User getOwner() {return owner;}
     public void setOwner(User owner) {this.owner = owner;}

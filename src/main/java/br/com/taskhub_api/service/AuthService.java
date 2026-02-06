@@ -8,7 +8,6 @@ import br.com.taskhub_api.entites.User;
 import br.com.taskhub_api.enums.Role;
 import br.com.taskhub_api.exception.InvalidCredentialsException;
 import br.com.taskhub_api.exception.UserAlreadyExistsException;
-import br.com.taskhub_api.mapper.RegisterMapper;
 import br.com.taskhub_api.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,7 +29,7 @@ public class AuthService {
     }
 
     @Transactional
-    public RegisterResponseDTO toRegister(RegisterRequestDTO dto) {
+    public void toRegister(RegisterRequestDTO dto) {
 
         if (userRepository.existsByEmail(dto.email()))
             throw new UserAlreadyExistsException();
@@ -42,8 +41,6 @@ public class AuthService {
         user.setRole(Role.USER);
 
         userRepository.save(user);
-
-        return RegisterMapper.toRegisterResponse(user);
     }
 
     public LoginResponseDTO toLogin(LoginRequestDTO dto) {
